@@ -1,0 +1,119 @@
+### Create a new board
+POST {{host}}/boards
+Content-Type: application/json
+
+{
+  "name": "My Board",
+  "section_details": ["went well", "to improve", "action items"]
+}
+
+{{
+  // post request script
+  exports.boardId = response.parsedBody.id;
+}}
+### Create a new note
+
+POST {{host}}/boards/{{boardId}}/notes
+Content-Type: application/json
+
+{
+  "section_number": 1,
+  "text": "This is a note"
+}
+
+{{
+  // post request script
+  const assert = require('assert');
+  exports.noteId = response.parsedBody.id;
+  assert.equal(response.statusCode, 201);
+}}
+
+### Get board
+GET {{host}}/boards/{{boardId}}
+Content-Type: application/json
+
+{{
+  // post request script
+  const assert = require('assert');
+  assert.equal(response.statusCode, 200);
+
+  const board = response.parsedBody;
+  assert.equal(board.id, boardId);
+  assert.equal(board.name, "My Board");
+  assert.deepEqual(board.section_details, ["went well", "to improve", "action items"]);
+  assert.deepEqual(board.notes, [{id: noteId,section_number: 1,text: 'This is a note',votes: 0}]);
+}}
+
+### Delete a note
+DELETE {{host}}/boards/{{boardId}}/notes/{{noteId}}
+Content-Type: application/json
+
+{{
+  // post request script
+  const assert = require('assert');
+  assert.equal(response.statusCode, 200);
+}}
+
+### Update a note
+
+PUT {{host}}/boards/{{boardId}}/notes/{{noteId}}
+Content-Type: application/json
+
+{
+  "section_number": 2,
+  "text": "This is an updated note"
+}
+
+{{
+  // post request script
+  const assert = require('assert');
+  assert.equal(response.statusCode, 404);
+}}
+
+### Create a new note and vote for it
+
+POST {{host}}/boards/{{boardId}}/notes
+Content-Type: application/json
+
+{
+  "section_number": 1,
+  "text": "This is a note"
+}
+
+{{
+  // post request script
+  const assert = require('assert');
+  exports.noteId = response.parsedBody.id;
+  assert.equal(response.statusCode, 201);
+}}
+
+PUT {{host}}/boards/{{boardId}}/notes/{{noteId}}/vote
+Content-Type: application/json
+
+{}
+
+{{
+  // post request script
+  const assert = require('assert');
+  assert.equal(response.statusCode, 200);
+
+  const note = response.parsedBody;
+  assert.equal(note.id, noteId);
+  assert.equal(note.votes, 1);
+}}
+
+### Send email summary
+
+POST {{host}}/email-summary
+Content-Type: application/json
+
+{
+  "board_id": "{{boardId}}",
+  "email_address": "{{email}}"
+}
+
+{{
+  // post request script
+  const assert = require('assert');
+  assert.equal(response.statusCode, 200);
+}}

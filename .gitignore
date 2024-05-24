@@ -1,0 +1,15 @@
+*.tfplan
+*.lock.hcl
+*.tfstate
+*.tfstate.backup
+.terraform/
+*.tfstate.lock.info
+
+.DS_STORE
+builds/
+.envrc
+
+*.pyc
+*.auto.tfvars
+
+infra/
