@@ -24,6 +24,10 @@ graph LR
     
 ```
 
+## Other Sample Projects to try
+
+- [hello-kitty](https://github.com/appcd-demo/hello-kitty) - a static website that can be deployed to Lambda and S3
+
 
 ## License
 
