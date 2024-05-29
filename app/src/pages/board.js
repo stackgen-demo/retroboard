@@ -10,12 +10,6 @@ export const BoardContext = createContext();
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-// TODO add note - Done
-// TODO update note - Done
-// TODO delete note - Done
-// TODO vote on note - Done
-// TODO add button to copy board link - Done
-// TODO add button to send email summary
 // TODO sort notes by votes
 export default function BoardPage () {
   const searchParams = useSearchParams();
