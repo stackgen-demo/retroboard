@@ -13,15 +13,16 @@ const ActionableBoard = ({ name, section_details, notes }) => {
     sectionName: "",
     noteText: "",
   });
+  const [sectionDetails,setSectionDetails] = useState(section_details);
 
   const sectionNotes = useMemo(
     () =>
-      section_details.map((name, index) => ({
+      sectionDetails.map((name, index) => ({
         name: name,
         notes: notes.filter((note) => note.section_number === index),
         section_number: index + 1,
       })),
-    [section_details]
+    [sectionDetails]
   );
 
   // Split sections into rows
@@ -32,7 +33,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
 
   const createNote = async () => {
     const newNoteRequest = {
-      section_number: section_details.findIndex(
+      section_number: sectionDetails.findIndex(
         (sectionName) => sectionName === activeSectionForDialog.sectionName
       ),
       text: activeSectionForDialog.noteText,
@@ -56,7 +57,6 @@ const ActionableBoard = ({ name, section_details, notes }) => {
       <Navbar type={NavbarTypes.IN_APP} name={name} />
       <div className="p-8 pt-0 overflow-auto h-[calc(100vh-5rem)]">
         <div className="bg-gray-100 h-full overflow-auto text-black rounded-md">
-          {console.log('rows-59::> ', rows)}
           {rows.map((row, rowIndex) => {
             // Determine grid classes based on number of sections in the row
             let gridClasses = "grid grid-cols-1";
@@ -69,7 +69,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
             return (
               <div
                 key={rowIndex}
-                className={`gap-4 p-1 ${gridClasses}`}
+                className={`gap-1 p-1 ${gridClasses}`}
               >
                 {row.map((section, index) => (
                   <div
@@ -87,6 +87,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
                         setOpenNoteDialog(true);
                       }}
                       index={index}
+                      sectionsInCurrentRow = {row.length}
                     />
                   </div>
                 ))}
@@ -109,7 +110,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
         footerRenderer={
           <div className="flex gap-2 justify-end">
             <Button
-              size="fit"
+              width="fit"
               onClick={() => {
                 setOpenNoteDialog(false);
                 setActiveSectionForDialog({ sectionName: "", noteText: "" });
@@ -118,7 +119,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
               variant="secondary"
             />
             <Button
-              size="fit"
+              width="fit"
               onClick={async () => {
                 await createNote()
                 setActiveSectionForDialog({ sectionName: "", noteText: "" });
