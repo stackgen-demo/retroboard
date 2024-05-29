@@ -11,9 +11,9 @@ export const BoardContext = createContext();
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
 // TODO add note - Done
-// TODO update note
-// TODO delete note 
-// TODO vote on note  
+// TODO update note - Done
+// TODO delete note - Done
+// TODO vote on note - Done
 // TODO add button to copy board link - Done
 // TODO add button to send email summary
 // TODO sort notes by votes
@@ -25,7 +25,7 @@ export default function BoardPage () {
     error,
     isLoading,
   } = useSWR(`${process.env.NEXT_PUBLIC_API_HOST_URL}/boards/${id}`, {
-    refreshInterval: 0,
+    refreshInterval: 5000, // TODO: update polling time if needed 
     fetcher: fetcher,
   });
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavbarTypes } from "../constants/app-constants";
 import Button from "./button";
 
-const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "" }) => {
+const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "", onSendEmailButtonClick = () => { } }) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const copyToClipboard = async () => {
@@ -22,8 +22,8 @@ const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "" }) => {
     <header className="flex justify-between">
       <div className="flex items-center pl-3">
         <img src="/logo.png" alt="Retroboard logo" className="w-6 h-6" />
-        <h2 className="font-mono text-xl px-3 py-2 text-yellow-500 font-semibold">
-          board: {name}
+        <h2 className="font-mono text-lg px-3 py-2 text-yellow-500 font-semibold">
+          Board: {name}
         </h2>
       </div>
       <div className="flex gap-2 pt-2 pr-2">
@@ -32,7 +32,7 @@ const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "" }) => {
           onClick={copyToClipboard}
           label={copySuccess ? "✅ Copied!" : "🔗 copy"}
         />
-        {/* <Button variant="primary2" label={"✉️ summary"} /> */}
+        <Button variant="primary2" label={"✉️ summary"} onClick={onSendEmailButtonClick} />
       </div>
     </header>
   );
