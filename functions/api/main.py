@@ -5,6 +5,7 @@ import boto3
 from fastapi import FastAPI, Response, status
 from mangum import Mangum
 from errors import NotFoundException, ServerErrorException
+import logging
 from models import *
 from repo import BoardRepo, initialize_db
 
@@ -25,6 +26,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.description = "api to create a board with notes"
+log_handler = logging.StreamHandler()
+log_handler.setLevel(logging.INFO)
+app.logger.addHandler(log_handler)
 
 db = initialize_db()
 sqs_client = boto3.client("sqs")
@@ -93,6 +97,7 @@ def vote_on_note(board_id: str, note_id: str):
 
 @app.post("/email-summary")
 def email_summary(body: EmailSummaryRequest, response: Response):
+    app.logger.info(f"Sending email summary for board {body.board_id} to {body.email_address}")
     board = repo.getBoard(body.board_id)
     if board is None:
         response.status_code = status.HTTP_404_NOT_FOUND
