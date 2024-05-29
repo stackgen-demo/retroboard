@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import boto3.dynamodb
 from boto3.resources.base import ServiceResource
@@ -8,7 +9,6 @@ from errors import NotFoundException, ServerErrorException
 from models import (
     Board,
     BoardBase,
-    MessageResponse,
     Note,
     NoteBase,
     NoteIDAndVoteResponse,
@@ -55,6 +55,7 @@ class BoardRepo:
     def addNoteToBoard(self, board_id: str, note: NoteBase):
         table = self.db.Table(DYNAMODB_TABLE_NAME)
         note_id = nanoid(size=DEFAULT_ID_LENGTH)
+        now = datetime.now().isoformat()
         response = table.put_item(
             Item={
                 "board_id": board_id,
@@ -63,6 +64,8 @@ class BoardRepo:
                 "section_number": note.section_number,
                 "note_text": note.text,
                 "votes": note.votes,
+                "created_at": now,
+                "updated_at": now,
             }
         )
         if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
@@ -71,6 +74,8 @@ class BoardRepo:
                 section_number=note.section_number,
                 text=note.text,
                 votes=note.votes,
+                created_at=now,
+                updated_at=now,
             )
         else:
             return None
@@ -100,6 +105,8 @@ class BoardRepo:
                         section_number=item["section_number"],
                         text=item["note_text"],
                         votes=item["votes"],
+                        created_at=item["created_at"],
+                        updated_at=item["updated_at"],
                     )
                 )
         return Board(
@@ -139,6 +146,8 @@ class BoardRepo:
                     section_number=item["section_number"],
                     text=item["note_text"],
                     votes=item["votes"],
+                    created_at=item["created_at"],
+                    updated_at=item["updated_at"],
                 )
             )
         return notes
@@ -158,17 +167,19 @@ class BoardRepo:
 
     def updateNote(self, board_id: str, note_id: str, note: NoteBase):
         table = self.db.Table(DYNAMODB_TABLE_NAME)
+        now = datetime.now().isoformat()
         try:
             response = table.update_item(
                 Key={
                     "board_id": board_id,
                     "sk": f"note#{note_id}",
                 },
-                UpdateExpression="set section_number = :section_number, note_text = :note_text",
+                UpdateExpression="set section_number = :section_number, note_text = :note_text, updated_at = :updated_at",
                 ConditionExpression="attribute_exists(board_id)",
                 ExpressionAttributeValues={
                     ":section_number": note.section_number,
                     ":note_text": note.text,
+                    ":updated_at": now,
                 },
             )
         except Exception as e:

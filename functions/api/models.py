@@ -27,6 +27,8 @@ class NoteIDAndVoteResponse(BaseModel):
 
 class Note(NoteBase):
     id: str
+    created_at: str
+    updated_at: str
 
 
 class MessageResponse(BaseModel):
