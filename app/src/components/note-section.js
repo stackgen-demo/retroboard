@@ -1,15 +1,21 @@
 import React, { Fragment } from "react";
 import Note from "./note";
 
-const NoteSection = ({ section, onAddNote, index, sectionsInCurrentRow }) => {
+const NoteSection = ({
+  section,
+  sectionsInCurrentRow,
+  onAddNote,
+  onEditNote,
+  onUpVoteClick,
+}) => {
   let columnClassForNotes;
 
   if (sectionsInCurrentRow === 3) {
-    columnClassForNotes = 'grid-cols-3'; // show 3 notes per column if there are 3 sections
+    columnClassForNotes = "grid-cols-3"; // show 3 notes per column if there are 3 sections
   } else if (sectionsInCurrentRow === 2) {
-    columnClassForNotes = 'grid-cols-4'; // show 4 notes per column if there are 2 section
+    columnClassForNotes = "grid-cols-4"; // show 4 notes per column if there are 2 section
   } else {
-    columnClassForNotes = 'grid-cols-6'; // show 6 notes per column if there is only 1 section
+    columnClassForNotes = "grid-cols-6"; // show 6 notes per column if there is only 1 section
   }
   return (
     <>
@@ -39,7 +45,12 @@ const NoteSection = ({ section, onAddNote, index, sectionsInCurrentRow }) => {
           <div className={`grid gap-2 ${columnClassForNotes}`}>
             {section.notes.map((note) => (
               <Fragment key={note.id}>
-                <Note note={note} index={index} />
+                <Note
+                  note={note}
+                  index={note.section_number}
+                  onNoteClick={onEditNote}
+                  onUpVoteClick={onUpVoteClick}
+                />
               </Fragment>
             ))}
           </div>

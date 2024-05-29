@@ -9,7 +9,7 @@ const NewBoardForm = () => {
   const [boardName, setBoardName] = useState("");
   const [sectionCount, setSectionCount] = useState(0);
 
-  async function submitForm(e) {
+  async function submitForm (e) {
     e.preventDefault();
     // disable button
     const button = document.getElementById("create-board-button");
