@@ -71,7 +71,7 @@ def delete_note(board_id: str, note_id: str):
 
 @app.put(
     "/boards/{board_id}/notes/{note_id}",
-    responses={404: {"model": MessageResponse}, 500: {"model": MessageResponse}},
+    responses={200: {"model": Note}, 404: {"model": MessageResponse}, 500: {"model": MessageResponse}},
 )
 def update_note(board_id: str, note_id: str, note: NoteBase, response: Response):
     try:

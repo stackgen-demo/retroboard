@@ -181,6 +181,7 @@ class BoardRepo:
                     ":note_text": note.text,
                     ":updated_at": now,
                 },
+                ReturnValues="ALL_NEW",
             )
         except Exception as e:
             print(e)
@@ -190,6 +191,9 @@ class BoardRepo:
                 id=note_id,
                 section_number=note.section_number,
                 text=note.text,
+                votes=response["Attributes"]["votes"],
+                created_at=response["Attributes"]["created_at"],
+                updated_at=response["Attributes"]["updated_at"],
             )
         else:
             print(response)
