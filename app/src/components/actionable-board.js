@@ -13,16 +13,17 @@ const ActionableBoard = ({ name, section_details, notes }) => {
     sectionName: "",
     noteText: "",
   });
-  const [sectionDetails,setSectionDetails] = useState(section_details);
+  const [sectionDetails, setSectionDetails] = useState(section_details);
+  const [notesList, setNotesList] = useState(notes);
 
   const sectionNotes = useMemo(
     () =>
       sectionDetails.map((name, index) => ({
         name: name,
-        notes: notes.filter((note) => note.section_number === index),
+        notes: notesList.filter((note) => note.section_number === index),
         section_number: index + 1,
       })),
-    [sectionDetails]
+    [sectionDetails, notesList]
   );
 
   // Split sections into rows
@@ -39,17 +40,22 @@ const ActionableBoard = ({ name, section_details, notes }) => {
       text: activeSectionForDialog.noteText,
       votes: 0,
     };
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_HOST_URL}/boards/${boardId}/notes`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newNoteRequest),
-      }
-    );
-    const res = await response.json();
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_HOST_URL}/boards/${boardId}/notes`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newNoteRequest),
+        }
+      );
+      const res = await response.json();
+      setNotesList([...notesList, res]) // pushing new note in notes list
+    } catch (e) {
+      console.log('error', e.message);
+    }
   };
 
   return (
@@ -74,8 +80,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
                 {row.map((section, index) => (
                   <div
                     key={index}
-                    className={`flex flex-col p-4 min-h-60 `}
-                  // ${index < row.length - 1 ? 'border-r border-gray-300' : ''}
+                    className={`flex flex-col p-4 min-h-60 ${index < row.length - 1 ? 'border-r border-gray-200' : ''}`}
                   >
                     <NoteSection
                       section={section}
@@ -87,7 +92,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
                         setOpenNoteDialog(true);
                       }}
                       index={index}
-                      sectionsInCurrentRow = {row.length}
+                      sectionsInCurrentRow={row.length}
                     />
                   </div>
                 ))}
