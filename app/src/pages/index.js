@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../components/navbar";
 import NewBoardForm from "../components/new-board-form";
 import Image from "next/image";
+import IconAttributionText from "../components/icon-attribution-text";
 
 
 export default function Home () {
@@ -23,6 +24,7 @@ export default function Home () {
           <NewBoardForm />
         </div>
       </div>
+      <IconAttributionText />
     </main>
   );
 }

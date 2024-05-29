@@ -4,6 +4,7 @@ import { createContext } from "react";
 
 import ActionableBoard from "../components/actionable-board";
 import Spinner from "../components/spinner";
+import IconAttributionText from "../components/icon-attribution-text";
 
 export const BoardContext = createContext();
 
@@ -51,6 +52,7 @@ export default function BoardPage () {
             notes={board.notes}
           />
         )}
+        <IconAttributionText />
       </main>
     </BoardContext.Provider>
   );
