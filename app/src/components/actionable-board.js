@@ -1,12 +1,18 @@
 import React, { useContext, useMemo, useState, useEffect } from "react";
 
-import { NavbarTypes } from "../constants/app-constants";
+import { NavbarTypes, SortOptions } from "../constants/app-constants";
 import Navbar from "./navbar";
 import NoteSection from "./note-section";
 import { BoardContext } from "../pages/board";
 import AddNoteDialog from "./add-note-dialog";
 import EditNoteDialog from "./edit-note-dialog";
-import { addVoteToNote, createNote, deleteNote, sendBoardSummaryEmail, updateNote } from "../utils/network-utils";
+import {
+  addVoteToNote,
+  createNote,
+  deleteNote,
+  sendBoardSummaryEmail,
+  updateNote,
+} from "../utils/network-utils";
 import EmailDialog from "./email-dialog";
 
 const ActionableBoard = ({ name, section_details, notes }) => {
@@ -21,19 +27,44 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   const [activeNoteForEdit, setActiveNoteForEdit] = useState({});
   const [sectionDetails, setSectionDetails] = useState(section_details);
   const [notesList, setNotesList] = useState(notes);
+  const [notesSortBy, setNotesSortBy] = useState(SortOptions[0].value);
 
   useEffect(() => {
-    setNotesList(notes)
-  }, [notes])
+    setNotesList(notes);
+  }, [notes]);
 
   const sectionNotes = useMemo(
     () =>
-      sectionDetails.map((name, index) => ({
-        name: name,
-        notes: notesList.filter((note) => note.section_number === index + 1),
-        section_number: index + 1,
-      })),
-    [sectionDetails, notesList]
+      sectionDetails.map((name, index) => {
+        const filteredNotesList = notesList.filter(
+          (note) => note.section_number === index + 1
+        );
+        let sortedNotesList = filteredNotesList;
+        console.log("notesSortBy-36::> ", notesSortBy);
+        switch (notesSortBy) {
+          case "created":
+            sortedNotesList = filteredNotesList.sort(
+              (a, b) => new Date(a.created_at) - new Date(b.created_at)
+            );
+            break;
+          case "updated":
+            sortedNotesList = filteredNotesList.sort(
+              (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+            );
+            break;
+          case "votes":
+            sortedNotesList = filteredNotesList.sort(
+              (a, b) => b.votes - a.votes
+            );
+            break;
+        }
+        return {
+          name: name,
+          notes: sortedNotesList,
+          section_number: index + 1,
+        };
+      }),
+    [sectionDetails, notesList, notesSortBy]
   );
 
   // Split sections into rows
@@ -44,15 +75,16 @@ const ActionableBoard = ({ name, section_details, notes }) => {
 
   const handleCreateNote = async () => {
     const newNoteRequest = {
-      section_number: sectionDetails.findIndex(
-        (sectionName) => sectionName === activeSectionForDialog.sectionName
-      ) + 1,
+      section_number:
+        sectionDetails.findIndex(
+          (sectionName) => sectionName === activeSectionForDialog.sectionName
+        ) + 1,
       text: activeSectionForDialog.text,
       votes: 0,
     };
     const responseObj = await createNote(newNoteRequest, boardId);
     if (responseObj) {
-      setNotesList([...notesList, responseObj]) // pushing new note in notes list
+      setNotesList([...notesList, responseObj]); // pushing new note in notes list
       setActiveSectionForDialog({ sectionName: "", text: "" });
       setOpenAddNoteDialog(false);
     }
@@ -64,10 +96,18 @@ const ActionableBoard = ({ name, section_details, notes }) => {
       text: activeNoteForEdit.text,
       votes: activeNoteForEdit.votes,
     };
-    const responseObj = await updateNote(updatedNoteRequest, boardId, activeNoteForEdit.id);
+    const responseObj = await updateNote(
+      updatedNoteRequest,
+      boardId,
+      activeNoteForEdit.id
+    );
     if (responseObj) {
       setNotesList(
-        notesList.map((note) => (note.id === activeNoteForEdit.id ? responseObj : note))
+        notesList.map((note) =>
+          note.id === activeNoteForEdit.id
+            ? { ...note, text: responseObj.text, votes: responseObj.votes }
+            : note
+        )
       );
       setActiveNoteForEdit({});
       setOpenEditNoteDialog(false);
@@ -77,7 +117,9 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   const handleDeleteNote = async () => {
     const responseObj = await deleteNote(boardId, activeNoteForEdit.id);
     if (responseObj) {
-      setNotesList(notes => [...notes.filter((note) => note.id !== activeNoteForEdit.id)]);
+      setNotesList((notes) => [
+        ...notes.filter((note) => note.id !== activeNoteForEdit.id),
+      ]);
       setOpenEditNoteDialog(false);
       setActiveNoteForEdit({});
     }
@@ -88,9 +130,11 @@ const ActionableBoard = ({ name, section_details, notes }) => {
     if (responseObj) {
       setNotesList(
         notesList.map((note) =>
-          note.id === responseObj.id ? { ...note, votes: responseObj.votes } : note
+          note.id === responseObj.id
+            ? { ...note, votes: responseObj.votes }
+            : note
         )
-      )
+      );
     }
   };
 
@@ -98,16 +142,21 @@ const ActionableBoard = ({ name, section_details, notes }) => {
     const boardSummaryEmailRequest = {
       board_id: boardId,
       email_address: email,
-    }
-    const responseObj = await sendBoardSummaryEmail(boardSummaryEmailRequest)
+    };
+    const responseObj = await sendBoardSummaryEmail(boardSummaryEmailRequest);
     if (responseObj) {
-      setOpenEmailDialog(false)
+      setOpenEmailDialog(false);
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-4">
-      <Navbar type={NavbarTypes.IN_APP} name={name} onSendEmailButtonClick={() => setOpenEmailDialog(true)} />
+      <Navbar
+        type={NavbarTypes.IN_APP}
+        name={name}
+        onSendEmailButtonClick={() => setOpenEmailDialog(true)}
+        onNotesSortByChange={(option) => setNotesSortBy(option)}
+      />
       <div className="p-8 pt-0 pb-4 overflow-auto h-[calc(100vh-5rem)]">
         <div className="bg-gray-100 h-full overflow-auto text-black rounded-md">
           {rows.map((row, rowIndex) => {
@@ -120,14 +169,12 @@ const ActionableBoard = ({ name, section_details, notes }) => {
             }
 
             return (
-              <div
-                key={rowIndex}
-                className={`gap-1 p-1 ${gridClasses}`}
-              >
+              <div key={rowIndex} className={`gap-1 p-1 ${gridClasses}`}>
                 {row.map((section, index) => (
                   <div
                     key={index}
-                    className={`flex flex-col p-4 min-h-60 ${index < row.length - 1 ? 'border-r border-gray-200' : ''}`}
+                    className={`flex flex-col p-4 min-h-60 ${index < row.length - 1 ? "border-r border-gray-200" : ""
+                      }`}
                   >
                     <NoteSection
                       section={section}
@@ -155,14 +202,18 @@ const ActionableBoard = ({ name, section_details, notes }) => {
       <AddNoteDialog
         activeSectionForDialog={activeSectionForDialog}
         onToggleDialog={(newStatus) => setOpenAddNoteDialog(newStatus)}
-        updateDialogActiveSection={(updatedSectionObj) => setActiveSectionForDialog(updatedSectionObj)}
+        updateDialogActiveSection={(updatedSectionObj) =>
+          setActiveSectionForDialog(updatedSectionObj)
+        }
         open={openAddNoteDialog}
         onCreateNoteSubmit={handleCreateNote}
       />
       <EditNoteDialog
         open={openEditNoteDialog}
         onToggleDialog={(newStatus) => setOpenEditNoteDialog(newStatus)}
-        updateDialogActiveNote={(updatedNotesObj) => setActiveNoteForEdit(updatedNotesObj)}
+        updateDialogActiveNote={(updatedNotesObj) =>
+          setActiveNoteForEdit(updatedNotesObj)
+        }
         activeNoteForEdit={activeNoteForEdit}
         onEditNoteSubmit={handleUpdateNote}
         onDeleteNote={handleDeleteNote}
@@ -177,4 +228,3 @@ const ActionableBoard = ({ name, section_details, notes }) => {
 };
 
 export default ActionableBoard;
-

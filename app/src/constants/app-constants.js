@@ -23,3 +23,9 @@ export const NavbarTypes = {
   AUTH: "auth",
   IN_APP: "in-app",
 };
+
+export const SortOptions = [
+  { value: 'created', label: 'Created Time' },
+  { value: 'updated', label: 'Updated Time' },
+  { value: 'votes', label: 'Votes' },
+];

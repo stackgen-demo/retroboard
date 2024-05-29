@@ -10,7 +10,6 @@ export const BoardContext = createContext();
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-// TODO sort notes by votes
 export default function BoardPage () {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");

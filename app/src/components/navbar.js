@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { NavbarTypes } from "../constants/app-constants";
+import { NavbarTypes, SortOptions } from "../constants/app-constants";
 import Button from "./button";
 
-const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "", onSendEmailButtonClick = () => { } }) => {
+const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "", onSendEmailButtonClick = () => { }, onNotesSortByChange = () => { } }) => {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const copyToClipboard = async () => {
@@ -26,7 +26,17 @@ const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "", onSendEmai
           Board: {name}
         </h2>
       </div>
-      <div className="flex gap-2 pt-2 pr-2">
+      <div className="flex gap-2 pt-2 pr-2 items-center">
+        <div className="flex items-center mr-1">
+          Sort By:
+          <select className="ml-2 border-gray-300 rounded-md text-gray-800 text-sm p-1 px-2" defaultValue={SortOptions[0].value} onChange={(e) => onNotesSortByChange(e.target.value)}>
+            {SortOptions.map((option, index) => (
+              <option key={index} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
         <Button
           variant="primary2"
           onClick={copyToClipboard}
