@@ -9,11 +9,11 @@ export const BoardContext = createContext();
 
 const fetcher = (url) => fetch(url).then((res) => res.json());
 
-// TODO add note
+// TODO add note - Done
 // TODO update note
-// TODO delete note
-// TODO vote on note
-// TODO add button to copy board link
+// TODO delete note 
+// TODO vote on note  
+// TODO add button to copy board link - Done
 // TODO add button to send email summary
 // TODO sort notes by votes
 export default function BoardPage () {
@@ -33,7 +33,9 @@ export default function BoardPage () {
       <main className="bg-emerald-950 h-screen overflow-hidden">
         {error ? (
           <div className="flex items-center justify-center h-screen w-full">
-            <span className="text-center text-xl">An error has occurred. Please try again later.</span>
+            <span className="text-center text-xl">
+              An error has occurred. Please try again later.
+            </span>
           </div>
         ) : isLoading ? (
           <div className="flex items-center justify-center h-screen w-full">
