@@ -40,7 +40,6 @@ const ActionableBoard = ({ name, section_details, notes }) => {
           (note) => note.section_number === index + 1
         );
         let sortedNotesList = filteredNotesList;
-        console.log("notesSortBy-36::> ", notesSortBy);
         switch (notesSortBy) {
           case "created":
             sortedNotesList = filteredNotesList.sort(

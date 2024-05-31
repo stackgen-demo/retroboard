@@ -13,10 +13,10 @@ export default function Home () {
         <div className="bg-emerald-950">
           <div className="flex items-center justify-center w-full h-full" >
             <Image
-              src={"/wireframe.png"}
-              alt="Wireframe"
-              width={500}
-              height={500}
+              src={"/example-board.png"}
+              alt="Example Retrospective board"
+              width={750}
+              height={700}
             />
           </div>
         </div>

@@ -37,11 +37,13 @@ const Navbar = ({ className = "", type = NavbarTypes.AUTH, name = "", onSendEmai
             ))}
           </select>
         </div>
-        <Button
-          variant="primary2"
-          onClick={copyToClipboard}
-          label={copySuccess ? "✅ Copied!" : "🔗 copy"}
-        />
+        {navigator.clipboard && (
+          <Button
+            variant="primary2"
+            onClick={copyToClipboard}
+            label={copySuccess ? "✅ Copied!" : "🔗 copy"}
+          />
+        )}
         <Button variant="primary2" label={"✉️ summary"} onClick={onSendEmailButtonClick} />
       </div>
     </header>
