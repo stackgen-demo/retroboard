@@ -18,7 +18,7 @@ export default function BoardPage () {
     error,
     isLoading,
   } = useSWR(`${process.env.NEXT_PUBLIC_API_HOST_URL}/boards/${id}`, {
-    refreshInterval: 5000, // TODO: update polling time if needed 
+    refreshInterval: 5000, // TODO: update polling time if needed
     fetcher: fetcher,
   });
 

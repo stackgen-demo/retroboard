@@ -38,7 +38,7 @@ const NewBoardForm = () => {
     if (response.ok) {
       const board = await response.json();
       // redirect to the new board
-      window.location.href = `/board?slug=${board.slug}&id=${board.id}`;
+      window.location.href = `/board.html?slug=${board.slug}&id=${board.id}`;
     } else {
       alert("Failed to create board");
       button.disabled = false;
