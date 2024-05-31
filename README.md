@@ -12,6 +12,20 @@ appCD provides a powerful and flexible way to define and manage your infrastruct
 Get started with IaC generation for this repo by following the instructions on [appCD Documentation](https://docs.appCD.io/getting-started)
 
 
+### Environment Variables
+
+- functions/email-summary
+```
+SES_SENDER_EMAIL_ADDRESS - email address from which the summary email will be sent
+```
+
+- functions/slack-alerts
+```
+SLACK_WEBHOOK_URL - slack webhook url to send alerts when a new board is created
+```
+
+### Architecture
+
 ```mermaid
 graph LR
     F[Web Browser] -->|serves| G[s3-web-app]

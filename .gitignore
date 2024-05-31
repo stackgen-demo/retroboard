@@ -13,3 +13,4 @@ builds/
 *.auto.tfvars
 
 infra/
+build/

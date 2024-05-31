@@ -10,9 +10,10 @@ from models import *
 from repo import BoardRepo, initialize_db
 
 from fastapi.middleware.cors import CORSMiddleware
+from env import S3_APP_URL, SNS_TOPIC_SLACK_ALERTS_ARN, SQS_SEND_EMAIL_QUEUE_URL
 
 origins = [
-    os.environ["S3_APP_URL"],
+    S3_APP_URL,
     "http://localhost:3000",
 ]
 
@@ -41,7 +42,7 @@ def create_board(board: BoardBase):
         BoardBase(name=board.name, slug=slug, section_details=board.section_details)
     )
     sns_client.publish(
-        TopicArn=os.environ["SNS_TOPIC_SLACK_ALERTS_ARN"],
+        TopicArn=SNS_TOPIC_SLACK_ALERTS_ARN,
         Message=f"New board created: {board.name} with slug: {board.slug} and id {board.id}",
     )
     return board
@@ -135,7 +136,7 @@ def email_summary(body: EmailSummaryRequest, response: Response):
     )
 
     sqs_response = sqs_client.send_message(
-        QueueUrl=os.environ["SQS_SEND_EMAIL_QUEUE_URL"],
+        QueueUrl=SQS_SEND_EMAIL_QUEUE_URL,
         MessageBody=email_summary.model_dump_json(),
     )
     if sqs_response["ResponseMetadata"]["HTTPStatusCode"] != 200:
@@ -146,4 +147,4 @@ def email_summary(body: EmailSummaryRequest, response: Response):
     return {"message": "Email summary will be sent shortly"}
 
 
-handler = Mangum(app, lifespan="off")
+lambda_handler = Mangum(app, lifespan="off")

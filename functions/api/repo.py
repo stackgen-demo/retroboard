@@ -13,9 +13,9 @@ from models import (
     NoteBase,
     NoteIDAndVoteResponse,
 )
+from env import DYNAMODB_TABLE_NAME
 
 DEFAULT_ID_LENGTH = 10
-DYNAMODB_TABLE_NAME = os.environ.get("DYNAMODB_TABLE_NAME")
 
 
 def initialize_db() -> ServiceResource:
