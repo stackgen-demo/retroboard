@@ -29,4 +29,3 @@ def lambda_handler(event, context):
         except ClientError as e:
             print(e.response["Error"]["Message"])
             raise e
-
