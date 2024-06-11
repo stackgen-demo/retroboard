@@ -147,4 +147,4 @@ def email_summary(body: EmailSummaryRequest, response: Response):
     return {"message": "Email summary will be sent shortly"}
 
 
-lambda_handler = Mangum(app, lifespan="off")
+mangum_app = Mangum(app, lifespan="off")

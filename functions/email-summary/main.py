@@ -7,7 +7,7 @@ from botocore.errorfactory import ClientError
 SENDER_EMAIL = os.environ["SES_SENDER_EMAIL_ADDRESS"]
 TEMPLATE_NAME = "retroboard-summary"
 
-def lambda_handler(event, context):
+def send_email(event, context):
     ses_client = boto3.client("ses")
 
     for record in event["Records"]:

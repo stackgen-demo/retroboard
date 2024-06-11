@@ -5,7 +5,7 @@ import json
 WEBHOOK_URL = os.environ["SLACK_WEBHOOK_URL"]
 
 http = urllib3.PoolManager()
-def lambda_handler(event, context):
+def send_slack_alert(event, context):
     msg = {
         "text": event['Records'][0]['Sns']['Message']
     }
