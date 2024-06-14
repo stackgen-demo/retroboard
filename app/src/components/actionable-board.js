@@ -28,6 +28,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   const [sectionDetails, setSectionDetails] = useState(section_details);
   const [notesList, setNotesList] = useState(notes);
   const [notesSortBy, setNotesSortBy] = useState(SortOptions[0].value);
+  const [isSubmissionInProgress, setIsSubmissionInProgress] = useState(false);
 
   useEffect(() => {
     setNotesList(notes);
@@ -73,6 +74,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   }
 
   const handleCreateNote = async () => {
+    setIsSubmissionInProgress(true);
     const newNoteRequest = {
       section_number:
         sectionDetails.findIndex(
@@ -82,6 +84,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
       votes: 0,
     };
     const responseObj = await createNote(newNoteRequest, boardId);
+    setIsSubmissionInProgress(false);
     if (responseObj) {
       setNotesList([...notesList, responseObj]); // pushing new note in notes list
       setActiveSectionForDialog({ sectionName: "", text: "" });
@@ -90,6 +93,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   };
 
   const handleUpdateNote = async () => {
+    setIsSubmissionInProgress(true);
     const updatedNoteRequest = {
       section_number: activeNoteForEdit.section_number,
       text: activeNoteForEdit.text,
@@ -100,6 +104,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
       boardId,
       activeNoteForEdit.id
     );
+    setIsSubmissionInProgress(false);
     if (responseObj) {
       setNotesList(
         notesList.map((note) =>
@@ -114,7 +119,9 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   };
 
   const handleDeleteNote = async () => {
+    setIsSubmissionInProgress(true);
     const responseObj = await deleteNote(boardId, activeNoteForEdit.id);
+    setIsSubmissionInProgress(false);
     if (responseObj) {
       setNotesList((notes) => [
         ...notes.filter((note) => note.id !== activeNoteForEdit.id),
@@ -125,7 +132,9 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   };
 
   const handleNoteUpVote = async (note) => {
+    setIsSubmissionInProgress(true);
     const responseObj = await addVoteToNote(boardId, note.id);
+    setIsSubmissionInProgress(false);
     if (responseObj) {
       setNotesList(
         notesList.map((note) =>
@@ -138,25 +147,27 @@ const ActionableBoard = ({ name, section_details, notes }) => {
   };
 
   const handleSendEmail = async (email) => {
+    setIsSubmissionInProgress(true);
     const boardSummaryEmailRequest = {
       board_id: boardId,
       email_address: email,
     };
     const responseObj = await sendBoardSummaryEmail(boardSummaryEmailRequest);
+    setIsSubmissionInProgress(false);
     if (responseObj) {
       setOpenEmailDialog(false);
     }
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       <Navbar
         type={NavbarTypes.IN_APP}
         name={name}
         onSendEmailButtonClick={() => setOpenEmailDialog(true)}
         onNotesSortByChange={(option) => setNotesSortBy(option)}
       />
-      <div className="p-8 pt-0 pb-4 overflow-auto h-[calc(100vh-5rem)]">
+      <div className="p-8 pt-0 pb-4 overflow-auto h-[calc(100vh-4rem)]">
         <div className="bg-gray-100 h-full overflow-auto text-black rounded-md">
           {rows.map((row, rowIndex) => {
             // Determine grid classes based on number of sections in the row
@@ -172,8 +183,9 @@ const ActionableBoard = ({ name, section_details, notes }) => {
                 {row.map((section, index) => (
                   <div
                     key={index}
-                    className={`flex flex-col p-4 min-h-60 ${index < row.length - 1 ? "border-r border-gray-200" : ""
-                      }`}
+                    className={`flex flex-col p-4 min-h-60 ${
+                      index < row.length - 1 ? "border-r border-gray-200" : ""
+                    }`}
                   >
                     <NoteSection
                       section={section}
@@ -206,6 +218,7 @@ const ActionableBoard = ({ name, section_details, notes }) => {
         }
         open={openAddNoteDialog}
         onCreateNoteSubmit={handleCreateNote}
+        isSubmissionInProgress={isSubmissionInProgress}
       />
       <EditNoteDialog
         open={openEditNoteDialog}
@@ -216,11 +229,13 @@ const ActionableBoard = ({ name, section_details, notes }) => {
         activeNoteForEdit={activeNoteForEdit}
         onEditNoteSubmit={handleUpdateNote}
         onDeleteNote={handleDeleteNote}
+        isSubmissionInProgress={isSubmissionInProgress}
       />
       <EmailDialog
         open={openEmailDialog}
         onToggleDialog={(newStatus) => setOpenEmailDialog(newStatus)}
-        onCreateNoteSubmit={handleSendEmail}
+        onCreateEmailSubmit={handleSendEmail}
+        isSubmissionInProgress={isSubmissionInProgress}
       />
     </div>
   );

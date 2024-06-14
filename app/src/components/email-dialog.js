@@ -3,7 +3,12 @@ import Dialog from "./dialog";
 import Button from "./button";
 import { isValidEmail } from "../utils/common-utils";
 
-const EmailDialog = ({ open, onToggleDialog, onCreateNoteSubmit }) => {
+const EmailDialog = ({
+  open,
+  onToggleDialog,
+  onCreateEmailSubmit,
+  isSubmissionInProgress,
+}) => {
   const [email, setEmail] = useState("");
   return (
     <Dialog
@@ -29,10 +34,11 @@ const EmailDialog = ({ open, onToggleDialog, onCreateNoteSubmit }) => {
             width="fit"
             onClick={() => {
               if (email && isValidEmail(email)) {
-                onCreateNoteSubmit(email);
+                onCreateEmailSubmit(email);
               }
             }}
             label={"Send"}
+            disabled={isSubmissionInProgress || !email || !isValidEmail(email)}
           />
         </div>
       }
