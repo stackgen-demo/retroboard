@@ -19,7 +19,7 @@ export const ButtonSize = {
   lg: "px-4 py-2.5 text-sm",
 };
 
-function Button ({
+function Button({
   label,
   variant = "primary",
   width = ButtonWidth.full,
@@ -29,9 +29,11 @@ function Button ({
   return (
     <button
       {...props}
-      className={`${ButtonVariant[variant]} ${ButtonWidth[width]} ${ButtonSize[size]
-        } rounded-md font-semibold shadow-sm disabled:opacity-50 ${props.className ? props.className : ""
-        }`}
+      className={`${ButtonVariant[variant]} ${ButtonWidth[width]} ${
+        ButtonSize[size]
+      } rounded-md font-semibold shadow-sm disabled:opacity-50 disabled:cursor-not-allowed ${
+        props.className ? props.className : ""
+      }`}
     >
       {label}
     </button>

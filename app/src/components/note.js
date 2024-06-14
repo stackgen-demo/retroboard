@@ -1,4 +1,5 @@
 import React from "react";
+import Spinner from "./spinner";
 
 const colorClass = [
   "from-indigo-200 to-indigo-300 hover:from-indigo-300 hover:to-indigo-400",
@@ -16,11 +17,17 @@ const colorClass = [
   "from-red-200 to-red-300 hover:from-red-300 hover:to-red-400",
 ];
 
-const Note = ({ note, index = 0, onNoteClick = () => { }, onUpVoteClick = () => { } }) => {
+const Note = ({
+  note,
+  index = 0,
+  onNoteClick = () => {},
+  onUpVoteClick = () => {},
+}) => {
   return (
     <div
-      className={`${colorClass[index % colorClass.length]
-        } relative min-h-28 bg-gradient-to-br p-2 font-permanentMarker text-lg text-gray-900 shadow-lg cursor-pointer`}
+      className={`${
+        colorClass[index % colorClass.length]
+      } relative min-h-28 bg-gradient-to-br p-2 font-permanentMarker text-lg text-gray-900 shadow-lg cursor-pointer`}
       onClick={() => onNoteClick(note)}
     >
       <div className="pb-5">
@@ -31,7 +38,7 @@ const Note = ({ note, index = 0, onNoteClick = () => { }, onUpVoteClick = () => 
           className="text-sm transition-all duration-150 ease-out hover:text-xl w-fit"
           onClick={(e) => {
             e.stopPropagation();
-            onUpVoteClick(note)
+            onUpVoteClick(note);
           }}
         >
           👍
