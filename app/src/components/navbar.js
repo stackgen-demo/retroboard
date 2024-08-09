@@ -17,12 +17,29 @@ const Navbar = ({
     setTimeout(() => setCopySuccess(false), 3000); // Change back after 3 seconds
   };
 
+  const redirectToGithubRepo = () => {
+    if (!window) return;
+    window.open("https://github.com/appcd-demo/retroboard", "_blank");
+  };
+
+  const GithubButton = () => (
+    <button
+      className="opacity-90 hover:opacity-100 cursor-pointer"
+      onClick={() => redirectToGithubRepo()}
+    >
+      <img src="/github.png" alt="Github logo" className="w-6 h-6" />
+    </button>
+  );
+
   return type === NavbarTypes.AUTH ? (
-    <header className={`flex items-center pl-3 ${className}`}>
-      <img src="/logo.png" alt="Retroboard logo" className="w-6 h-6" />
-      <h2 className="font-mono text-xl px-3 py-2 text-yellow-500 font-semibold">
-        boards
-      </h2>
+    <header className={`flex items-center justify-between px-3 ${className}`}>
+      <div className="flex items-center">
+        <img src="/logo.png" alt="Retroboard logo" className="w-6 h-6" />
+        <h2 className="font-mono text-xl px-3 py-2 text-yellow-500 font-semibold">
+          boards
+        </h2>
+      </div>
+      <GithubButton />
     </header>
   ) : (
     <header className="flex justify-between">
@@ -59,6 +76,7 @@ const Navbar = ({
           label={"✉️ summary"}
           onClick={onSendEmailButtonClick}
         />
+        <GithubButton />
       </div>
     </header>
   );
