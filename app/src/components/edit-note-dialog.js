@@ -20,13 +20,13 @@ const EditNoteDialog = ({
       }
       footerRenderer={
         <div className="flex gap-2 justify-between">
-          <Button
+          {/* <Button
             width="fit"
             onClick={onDeleteNote}
             label={"Remove"}
             variant="danger"
             disabled={isSubmissionInProgress}
-          />
+          /> */}
           <div className="flex gap-2">
             <Button
               width="fit"
