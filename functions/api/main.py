@@ -10,13 +10,11 @@ from models import *
 from repo import BoardRepo, initialize_db
 
 from fastapi.middleware.cors import CORSMiddleware
-from env import S3_APP_URL, SNS_TOPIC_SLACK_ALERTS_ARN, SQS_SEND_EMAIL_QUEUE_URL
+from env import CORS_ALLOWED_ORIGINS, SNS_TOPIC_SLACK_ALERTS_ARN, SQS_SEND_EMAIL_QUEUE_URL
 
-origins = [
-    S3_APP_URL,
+origins = CORS_ALLOWED_ORIGINS.split(",") + [
     "http://localhost:3000",
 ]
-
 
 app = FastAPI()
 app.add_middleware(

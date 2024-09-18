@@ -26,17 +26,8 @@ SLACK_WEBHOOK_URL - slack webhook url to send alerts when a new board is created
 
 ### Architecture
 
-```mermaid
-graph LR
-    F[Web Browser] -->|serves| G[s3-web-app]
-    F[Web Browser] -->|http| A
-    A[lambda-api] -->|read/write| B[dynamodb]
-    A[lambda-api] --> |slack alert on new board creation| H[lambda-slack-alerts]
-    A -->|queue email request| C[sqs]
-    C -->|event-source-mapping| D[lambda-send-email]
-    D -->|trigger summary email| E[ses]
-    
-```
+
+![](api+email.png)
 
 ## Other Sample Projects to try
 
