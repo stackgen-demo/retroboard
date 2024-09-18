@@ -9,14 +9,14 @@ root_dir=$(pwd)
 # package api
 cd functions/api || exit
 tempdir=$(mktemp -d -t retroboard-api)
-cp -r ./*.py Pipfile Pipfile.lock requirements.txt "$tempdir"
+cp -r ./*.py requirements.txt "$tempdir"
 cd "$tempdir" || exit
 mkdir package
-pip3 install -r requirements.txt --target package
+pip3 install -r requirements.txt --target package --platform manylinux2014_x86_64 --only-binary=:all:
 cd package || exit
 zip -r ../api.zip .
 cd ..
-zip -g api.zip ./*.py Pipfile Pipfile.lock requirements.txt
+zip -g api.zip ./*.py requirements.txt
 
 mv "$tempdir"/api.zip "$root_dir"/build/
 
