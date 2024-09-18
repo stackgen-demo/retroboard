@@ -1,4 +1,4 @@
 build:
-	sh build.sh
+	sh build-lambda-package.sh
 
 .PHONY: build
