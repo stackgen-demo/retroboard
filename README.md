@@ -27,7 +27,7 @@ SLACK_WEBHOOK_URL - slack webhook url to send alerts when a new board is created
 ### Architecture
 
 
-![](api+email.png)
+![](arch.png)
 
 ## Other Sample Projects to try
 
